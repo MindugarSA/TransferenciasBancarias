@@ -131,6 +131,77 @@ namespace TransferenciasBancarias.Capa_Presentacion
             this.Grid4 = ((SAPbouiCOM.Grid)(this.GetItem("Item_74").Specific));
             this.Grid4.ClickAfter += new SAPbouiCOM._IGridEvents_ClickAfterEventHandler(this.Grid4_ClickAfter);
             this.CheckBox0 = ((SAPbouiCOM.CheckBox)(this.GetItem("Item_58").Specific));
+            this.Button6 = ((SAPbouiCOM.Button)(this.GetItem("Item_65").Specific));
+            this.Folder6 = ((SAPbouiCOM.Folder)(this.GetItem("Item_67").Specific));
+            this.OptionBtn0 = ((SAPbouiCOM.OptionBtn)(this.GetItem("Item_75").Specific));
+            this.OptionBtn1 = ((SAPbouiCOM.OptionBtn)(this.GetItem("Item_76").Specific));
+            this.Folder7 = ((SAPbouiCOM.Folder)(this.GetItem("Item_78").Specific));
+            this.Folder8 = ((SAPbouiCOM.Folder)(this.GetItem("Item_80").Specific));
+            this.StaticText28 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_81").Specific));
+            this.PictureBox0 = ((SAPbouiCOM.PictureBox)(this.GetItem("Item_82").Specific));
+            this.StaticText31 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_83").Specific));
+            this.PictureBox1 = ((SAPbouiCOM.PictureBox)(this.GetItem("Item_84").Specific));
+            this.StaticText32 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_85").Specific));
+            this.PictureBox2 = ((SAPbouiCOM.PictureBox)(this.GetItem("Item_86").Specific));
+            this.StaticText33 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_87").Specific));
+            this.PictureBox3 = ((SAPbouiCOM.PictureBox)(this.GetItem("Item_88").Specific));
+            this.StaticText34 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_89").Specific));
+            this.PictureBox4 = ((SAPbouiCOM.PictureBox)(this.GetItem("Item_90").Specific));
+            this.StaticText35 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_91").Specific));
+            this.PictureBox5 = ((SAPbouiCOM.PictureBox)(this.GetItem("Item_92").Specific));
+            this.StaticText36 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_93").Specific));
+            this.StaticText37 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_94").Specific));
+            this.PictureBox6 = ((SAPbouiCOM.PictureBox)(this.GetItem("Item_95").Specific));
+            this.PictureBox7 = ((SAPbouiCOM.PictureBox)(this.GetItem("Item_96").Specific));
+            this.StaticText38 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_97").Specific));
+            this.StaticText39 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_98").Specific));
+            this.StaticText40 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_99").Specific));
+            this.PictureBox8 = ((SAPbouiCOM.PictureBox)(this.GetItem("Item_100").Specific));
+            this.StaticText41 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_101").Specific));
+            this.PictureBox9 = ((SAPbouiCOM.PictureBox)(this.GetItem("Item_102").Specific));
+            this.StaticText42 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_103").Specific));
+            this.PictureBox10 = ((SAPbouiCOM.PictureBox)(this.GetItem("Item_104").Specific));
+            this.StaticText43 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_105").Specific));
+            this.PictureBox11 = ((SAPbouiCOM.PictureBox)(this.GetItem("Item_106").Specific));
+            this.StaticText44 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_107").Specific));
+            this.PictureBox12 = ((SAPbouiCOM.PictureBox)(this.GetItem("Item_108").Specific));
+            this.StaticText45 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_109").Specific));
+            this.PictureBox13 = ((SAPbouiCOM.PictureBox)(this.GetItem("Item_110").Specific));
+            this.StaticText46 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_111").Specific));
+            this.StaticText47 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_112").Specific));
+            this.StaticText48 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_113").Specific));
+            this.PictureBox14 = ((SAPbouiCOM.PictureBox)(this.GetItem("Item_114").Specific));
+            this.StaticText49 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_115").Specific));
+            this.PictureBox15 = ((SAPbouiCOM.PictureBox)(this.GetItem("Item_116").Specific));
+            this.StaticText50 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_117").Specific));
+            this.PictureBox16 = ((SAPbouiCOM.PictureBox)(this.GetItem("Item_118").Specific));
+            this.StaticText51 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_119").Specific));
+            this.PictureBox17 = ((SAPbouiCOM.PictureBox)(this.GetItem("Item_120").Specific));
+            this.PictureBox18 = ((SAPbouiCOM.PictureBox)(this.GetItem("Item_122").Specific));
+            this.PictureBox19 = ((SAPbouiCOM.PictureBox)(this.GetItem("Item_124").Specific));
+            this.StaticText54 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_125").Specific));
+            this.StaticText55 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_126").Specific));
+            this.PictureBox20 = ((SAPbouiCOM.PictureBox)(this.GetItem("Item_127").Specific));
+            this.PictureBox21 = ((SAPbouiCOM.PictureBox)(this.GetItem("Item_128").Specific));
+            this.StaticText56 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_129").Specific));
+            this.StaticText57 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_130").Specific));
+            this.PictureBox22 = ((SAPbouiCOM.PictureBox)(this.GetItem("Item_132").Specific));
+            this.StaticText59 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_133").Specific));
+            this.PictureBox23 = ((SAPbouiCOM.PictureBox)(this.GetItem("Item_134").Specific));
+            this.StaticText60 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_135").Specific));
+            this.PictureBox24 = ((SAPbouiCOM.PictureBox)(this.GetItem("Item_136").Specific));
+            this.PictureBox25 = ((SAPbouiCOM.PictureBox)(this.GetItem("Item_138").Specific));
+            this.PictureBox26 = ((SAPbouiCOM.PictureBox)(this.GetItem("Item_140").Specific));
+            this.PictureBox27 = ((SAPbouiCOM.PictureBox)(this.GetItem("Item_142").Specific));
+            this.StaticText64 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_143").Specific));
+            this.StaticText65 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_144").Specific));
+            this.StaticText66 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_145").Specific));
+            this.StaticText67 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_146").Specific));
+            this.StaticText68 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_147").Specific));
+            this.StaticText69 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_148").Specific));
+            this.StaticText70 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_149").Specific));
+            this.StaticText71 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_150").Specific));
+            this.Button9 = ((SAPbouiCOM.Button)(this.GetItem("Item_151").Specific));
             this.OnCustomInitialize();
 
         }
@@ -151,6 +222,8 @@ namespace TransferenciasBancarias.Capa_Presentacion
             oForm = Application.SBO_Application.Forms.Item(this.UIAPIRawForm.UniqueID);
 
             Cargar_Grids();
+            OptionBtn1.GroupWith("Item_75");
+            oForm.DataSources.UserDataSources.Item("OptFlujo").ValueEx = "1";
 
             Folder0.Item.Click();
         }
@@ -619,12 +692,14 @@ namespace TransferenciasBancarias.Capa_Presentacion
             {
                 oGrid = (SAPbouiCOM.Grid)oForm.Items.Item("Item_6").Specific;
 
-                SAPbouiCOM.EditTextColumn oEditCol = (SAPbouiCOM.EditTextColumn)oGrid.Columns.Item(0);
+                oGrid.Columns.Item(0).Type = SAPbouiCOM.BoGridColumnType.gct_CheckBox;
+
+                SAPbouiCOM.EditTextColumn oEditCol = (SAPbouiCOM.EditTextColumn)oGrid.Columns.Item(1);
                 oEditCol.LinkedObjectType = "140";
-                oEditCol = (SAPbouiCOM.EditTextColumn)oGrid.Columns.Item(3);
+                oEditCol = (SAPbouiCOM.EditTextColumn)oGrid.Columns.Item(4);
                 oEditCol.LinkedObjectType = "2";
                 oEditCol.Width += 13;
-                oEditCol = (SAPbouiCOM.EditTextColumn)oGrid.Columns.Item(5);
+                oEditCol = (SAPbouiCOM.EditTextColumn)oGrid.Columns.Item(6);
                 oEditCol.LinkedObjectType = "1";
                 oEditCol = (SAPbouiCOM.EditTextColumn)oGrid.Columns.Item("Facturas");
                 oEditCol.LinkedObjectType = "63";
@@ -637,25 +712,26 @@ namespace TransferenciasBancarias.Capa_Presentacion
                 List<int> ColumnasEnfasis = new List<int>(new int[] { 0, 3, 5, 8, 10, 15, 16, 17, 18, 19, 20 });
                 List<int> ColumnasNoVisibles = new List<int>(new int[] { 11, 12, 21, 22, 24 });
 
-                oGrid.Item.Enabled = false;
+                //oGrid.Item.Enabled = false;
 
                 for (int iCols = 0; iCols <= oGrid.Columns.Count - 1; iCols++)
                 {
                     oGrid.Columns.Item(iCols).BackColor = Funciones.Color_RGB_SAP(250, 255, 255);
-                    if (ColumnasJustificadas.Contains(iCols))
+                    oGrid.Columns.Item(iCols).Editable = iCols > 0 ? false : true;
+                    if (ColumnasJustificadas.Contains(iCols + 1))
                     {
-                        oGrid.Columns.Item(iCols).RightJustified = true;
+                        oGrid.Columns.Item(iCols + 1).RightJustified = true;
                     }
-                    if (ColumnasEnfasis.Contains(iCols))
+                    if (ColumnasEnfasis.Contains(iCols + 1))
                     {
-                        oGrid.Columns.Item(iCols).BackColor = Funciones.Color_RGB_SAP(250, 250, 210);
+                        oGrid.Columns.Item(iCols + 1).BackColor = Funciones.Color_RGB_SAP(250, 250, 210);
                     }
-                    if (ColumnasNoVisibles.Contains(iCols))
+                    if (ColumnasNoVisibles.Contains(iCols + 1))
                     {
-                        oGrid.Columns.Item(iCols).Visible = false;
+                        oGrid.Columns.Item(iCols + 1).Visible = false;
                     }
-                    if (iCols > 24)
-                        oGrid.Columns.Item(iCols).Type = SAPbouiCOM.BoGridColumnType.gct_CheckBox;
+                    if (iCols > 25)
+                        oGrid.Columns.Item(iCols + 1).Type = SAPbouiCOM.BoGridColumnType.gct_CheckBox;
                 }
                 Funciones.Numero_Fila_Grid(oGrid);
             }
@@ -1220,7 +1296,76 @@ namespace TransferenciasBancarias.Capa_Presentacion
         private SAPbouiCOM.StaticText StaticText30;
         private SAPbouiCOM.Grid Grid4;
         private SAPbouiCOM.CheckBox CheckBox0;
-
-
+        private SAPbouiCOM.Button Button6;
+        private SAPbouiCOM.Folder Folder6;
+        private SAPbouiCOM.OptionBtn OptionBtn0;
+        private SAPbouiCOM.OptionBtn OptionBtn1;
+        private SAPbouiCOM.Folder Folder7;
+        private SAPbouiCOM.Folder Folder8;
+        private SAPbouiCOM.StaticText StaticText28;
+        private SAPbouiCOM.PictureBox PictureBox0;
+        private SAPbouiCOM.StaticText StaticText31;
+        private SAPbouiCOM.PictureBox PictureBox1;
+        private SAPbouiCOM.StaticText StaticText32;
+        private SAPbouiCOM.PictureBox PictureBox2;
+        private SAPbouiCOM.StaticText StaticText33;
+        private SAPbouiCOM.PictureBox PictureBox3;
+        private SAPbouiCOM.StaticText StaticText34;
+        private SAPbouiCOM.PictureBox PictureBox4;
+        private SAPbouiCOM.StaticText StaticText35;
+        private SAPbouiCOM.PictureBox PictureBox5;
+        private SAPbouiCOM.StaticText StaticText36;
+        private SAPbouiCOM.StaticText StaticText37;
+        private SAPbouiCOM.PictureBox PictureBox6;
+        private SAPbouiCOM.PictureBox PictureBox7;
+        private SAPbouiCOM.StaticText StaticText38;
+        private SAPbouiCOM.StaticText StaticText39;
+        private SAPbouiCOM.StaticText StaticText40;
+        private SAPbouiCOM.PictureBox PictureBox8;
+        private SAPbouiCOM.StaticText StaticText41;
+        private SAPbouiCOM.PictureBox PictureBox9;
+        private SAPbouiCOM.StaticText StaticText42;
+        private SAPbouiCOM.PictureBox PictureBox10;
+        private SAPbouiCOM.StaticText StaticText43;
+        private SAPbouiCOM.PictureBox PictureBox11;
+        private SAPbouiCOM.StaticText StaticText44;
+        private SAPbouiCOM.PictureBox PictureBox12;
+        private SAPbouiCOM.StaticText StaticText45;
+        private SAPbouiCOM.PictureBox PictureBox13;
+        private SAPbouiCOM.StaticText StaticText46;
+        private SAPbouiCOM.StaticText StaticText47;
+        private SAPbouiCOM.StaticText StaticText48;
+        private SAPbouiCOM.PictureBox PictureBox14;
+        private SAPbouiCOM.StaticText StaticText49;
+        private SAPbouiCOM.PictureBox PictureBox15;
+        private SAPbouiCOM.StaticText StaticText50;
+        private SAPbouiCOM.PictureBox PictureBox16;
+        private SAPbouiCOM.StaticText StaticText51;
+        private SAPbouiCOM.PictureBox PictureBox17;
+        private SAPbouiCOM.PictureBox PictureBox18;
+        private SAPbouiCOM.PictureBox PictureBox19;
+        private SAPbouiCOM.StaticText StaticText54;
+        private SAPbouiCOM.StaticText StaticText55;
+        private SAPbouiCOM.PictureBox PictureBox20;
+        private SAPbouiCOM.PictureBox PictureBox21;
+        private SAPbouiCOM.StaticText StaticText56;
+        private SAPbouiCOM.StaticText StaticText57;
+        private SAPbouiCOM.PictureBox PictureBox22;
+        private SAPbouiCOM.StaticText StaticText59;
+        private SAPbouiCOM.PictureBox PictureBox23;
+        private SAPbouiCOM.StaticText StaticText60;
+        private SAPbouiCOM.PictureBox PictureBox24;
+        private SAPbouiCOM.PictureBox PictureBox25;
+        private SAPbouiCOM.PictureBox PictureBox26;
+        private SAPbouiCOM.PictureBox PictureBox27;
+        private SAPbouiCOM.StaticText StaticText64;
+        private SAPbouiCOM.StaticText StaticText65;
+        private SAPbouiCOM.StaticText StaticText66;
+        private SAPbouiCOM.StaticText StaticText67;
+        private SAPbouiCOM.StaticText StaticText68;
+        private SAPbouiCOM.StaticText StaticText69;
+        private SAPbouiCOM.StaticText StaticText70;
+        private SAPbouiCOM.StaticText StaticText71;
+        private SAPbouiCOM.Button Button9;
     }
 }
