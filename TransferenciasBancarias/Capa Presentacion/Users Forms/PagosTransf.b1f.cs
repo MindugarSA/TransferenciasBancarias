@@ -13,13 +13,14 @@ namespace TransferenciasBancarias.Capa_Presentacion
     [FormAttribute("TransferenciasBancarias.Capa_Presentacion.PagosTransf", "Capa Presentacion/Users Forms/PagosTransf.b1f")]
     class PagosTransf : UserFormBase
     {
-        private static SAPbobsCOM.Company oCompany = Funciones.oCompany;
+        private static SAPbobsCOM.Company oCompany = Program.oCompany;
         private static SAPbouiCOM.Form oForm = null;
         private static SAPbouiCOM.Grid oGrid = null;
         //private static SAPbouiCOM.DataTable oDTTable = null;
         //private static SAPbouiCOM.UserDataSource oUDS = null;
 
         private static int rSelecc = 0;
+        private static int rSeleccPagos = 0;
         private static int NumDocsPagos = 0;
         private static decimal TotalSelecc = 0;
 
@@ -132,6 +133,7 @@ namespace TransferenciasBancarias.Capa_Presentacion
             this.Grid4.ClickAfter += new SAPbouiCOM._IGridEvents_ClickAfterEventHandler(this.Grid4_ClickAfter);
             this.CheckBox0 = ((SAPbouiCOM.CheckBox)(this.GetItem("Item_58").Specific));
             this.Button6 = ((SAPbouiCOM.Button)(this.GetItem("Item_65").Specific));
+            this.Button6.ClickAfter += new SAPbouiCOM._IButtonEvents_ClickAfterEventHandler(this.Button6_ClickAfter);
             this.Folder6 = ((SAPbouiCOM.Folder)(this.GetItem("Item_67").Specific));
             this.OptionBtn0 = ((SAPbouiCOM.OptionBtn)(this.GetItem("Item_75").Specific));
             this.OptionBtn1 = ((SAPbouiCOM.OptionBtn)(this.GetItem("Item_76").Specific));
@@ -202,6 +204,7 @@ namespace TransferenciasBancarias.Capa_Presentacion
             this.StaticText70 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_149").Specific));
             this.StaticText71 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_150").Specific));
             this.Button9 = ((SAPbouiCOM.Button)(this.GetItem("Item_151").Specific));
+            this.Button9.ClickAfter += new SAPbouiCOM._IButtonEvents_ClickAfterEventHandler(this.Button9_ClickAfter);
             this.OnCustomInitialize();
 
         }
@@ -213,17 +216,20 @@ namespace TransferenciasBancarias.Capa_Presentacion
         {
             this.ResizeAfter += new SAPbouiCOM.Framework.FormBase.ResizeAfterHandler(this.Form_ResizeAfter);
             this.CloseBefore += new SAPbouiCOM.Framework.FormBase.CloseBeforeHandler(this.Form_CloseBefore);
+            this.LoadAfter += new LoadAfterHandler(this.Form_LoadAfter);
 
         }
 
 
         private void OnCustomInitialize()
         {
+            Application.SBO_Application.StatusBar.SetText("Cargando Datos", SAPbouiCOM.BoMessageTime.bmt_Medium, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
+
             oForm = Application.SBO_Application.Forms.Item(this.UIAPIRawForm.UniqueID);
 
             Cargar_Grids();
             OptionBtn1.GroupWith("Item_75");
-            oForm.DataSources.UserDataSources.Item("OptFlujo").ValueEx = "1";
+            //oForm.DataSources.UserDataSources.Item("OptFlujo").ValueEx = "1";
 
             Folder0.Item.Click();
         }
@@ -240,7 +246,7 @@ namespace TransferenciasBancarias.Capa_Presentacion
                         try
                         {
                             BubbleEvent = false;
-                            if(AnularArchivoTXT() == "S")
+                            if (AnularArchivoTXT() == "S")
                             {
                                 ((SAPbouiCOM.Button)oForm.Items.Item("Item_68").Specific).Item.Click();
                                 Application.SBO_Application.StatusBar.SetText("Archivo TXT Anulado Exitosamente", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
@@ -248,7 +254,7 @@ namespace TransferenciasBancarias.Capa_Presentacion
                             else
                                 Application.SBO_Application.StatusBar.SetText("Error al Anular el Archivo TXT", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
 
-                                                  
+
                         }
                         catch (Exception) { }
                         break;
@@ -288,7 +294,7 @@ namespace TransferenciasBancarias.Capa_Presentacion
         public static void Transferencias_ItemEvent(string FormUID, ref SAPbouiCOM.ItemEvent pVal, out bool bBubbleEvent)
         {
             bBubbleEvent = true;
-            oCompany = Funciones.oCompany;
+            oCompany = Program.oCompany;
             try
             {
                 switch (pVal.BeforeAction)
@@ -307,7 +313,7 @@ namespace TransferenciasBancarias.Capa_Presentacion
                                         switch (pVal.ColUID)
                                         {
                                             case "Facturas":
-                                                AbrirConsultaFacturas(oGrid,pVal.Row);
+                                                AbrirConsultaFacturas(oGrid, pVal.Row);
                                                 bBubbleEvent = false;
                                                 break;
                                             case "Recepciones":
@@ -320,7 +326,7 @@ namespace TransferenciasBancarias.Capa_Presentacion
                                                 break;
                                         }
                                     }
-                                    catch(Exception){ }
+                                    catch (Exception) { }
                                     break;
                                 case SAPbouiCOM.BoEventTypes.et_CLICK:
                                     break;
@@ -336,7 +342,7 @@ namespace TransferenciasBancarias.Capa_Presentacion
                         break;
                 }
             }
-            catch (Exception){ }
+            catch (Exception) { }
         }
 
         private void Form_ResizeAfter(SAPbouiCOM.SBOItemEventArg pVal)
@@ -373,6 +379,16 @@ namespace TransferenciasBancarias.Capa_Presentacion
             try
             {
                 Grid1.Rows.SelectedRows.Add(pVal.Row);
+                if (((SAPbouiCOM.CheckBoxColumn)Grid1.Columns.Item("Selec.")).IsChecked(pVal.Row))
+                {
+                    Grid1.CommonSetting.SetRowBackColor(pVal.Row + 1, Funciones.Color_RGB_SAP(141, 182, 0));
+                    rSeleccPagos += 1;
+                }
+                else
+                {
+                    Grid1.CommonSetting.SetRowBackColor(pVal.Row + 1, Funciones.Color_RGB_SAP(250, 255, 255));
+                    rSeleccPagos -= 1;
+                }
             }
             catch (Exception) { }
         }
@@ -380,7 +396,7 @@ namespace TransferenciasBancarias.Capa_Presentacion
         private void Grid2_ClickAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
             try
-            {    
+            {
                 Grid2.Rows.SelectedRows.Add(pVal.Row);
 
                 if (pVal.ColUID == "Transf.")
@@ -415,7 +431,7 @@ namespace TransferenciasBancarias.Capa_Presentacion
                 }
             }
             catch (Exception) { }
-        
+
         }
 
         private void Grid2_DoubleClickBefore(object sboObject, SAPbouiCOM.SBOItemEventArg pVal, out bool BubbleEvent)
@@ -484,7 +500,7 @@ namespace TransferenciasBancarias.Capa_Presentacion
                 oForm.Freeze(true);
                 Cargar_Grid_Por_Transferir();
             }
-            catch (Exception) { }       
+            catch (Exception) { }
             finally { oForm.Freeze(false); }
         }
 
@@ -503,7 +519,7 @@ namespace TransferenciasBancarias.Capa_Presentacion
                     string Nombre = NArchivoTransferencia.Nombre();
                     string Ruta = DT_PARAM.GetValue("Info", 10).ToString().Trim();
                     string RutaR = DT_PARAM.GetValue("Info", 11).ToString().Trim();
-                    
+
                     if (!Directory.Exists(Ruta))
                     {
                         Ruta = NArchivoTransferencia.Ruta();
@@ -544,7 +560,7 @@ namespace TransferenciasBancarias.Capa_Presentacion
                 }
             }
             catch (Exception) { }
-            finally {oForm.Freeze(false);}
+            finally { oForm.Freeze(false); }
         }
 
         private void Button5_ClickAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
@@ -570,6 +586,55 @@ namespace TransferenciasBancarias.Capa_Presentacion
 
         }
 
+        private void Button9_ClickAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            string Opcion = oForm.DataSources.UserDataSources.Item("OptFlujo").ValueEx;
+
+            if (Opcion == "1")
+            {
+                DT_SQL.ExecuteQuery(@"UPDATE OWTM SET Active = 'Y',AppOnUpd = 'Y' WHERE Name in ('Pagos_Transf_N1','Pagos_Transf_N2')");
+                DT_SQL.ExecuteQuery(@"UPDATE OWTM SET Active = 'N',AppOnUpd = 'N' WHERE Name in ('Pagos_Transf_N1B','Pagos_Transf_N2B')");
+                DT_SQL.ExecuteQuery(@"UPDATE [@Z_MIN_TXTPAGOS] SET U_FlujoActivo = '" + Opcion + "'");
+            }
+            else if (Opcion == "2")
+            {
+                DT_SQL.ExecuteQuery(@"UPDATE OWTM SET Active = 'N',AppOnUpd = 'N' WHERE Name in ('Pagos_Transf_N1','Pagos_Transf_N2')");
+                DT_SQL.ExecuteQuery(@"UPDATE OWTM SET Active = 'Y',AppOnUpd = 'Y' WHERE Name in ('Pagos_Transf_N1B','Pagos_Transf_N2B')");
+                DT_SQL.ExecuteQuery(@"UPDATE [@Z_MIN_TXTPAGOS] SET U_FlujoActivo = '" + Opcion + "'");
+            }
+            string Texto = "Flujo de Aprobacion Activo: " + (Opcion == "1" ? "NORMAL" : "BACKUP");
+            Application.SBO_Application.StatusBar.SetText(Texto, SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
+            //Actualizar_Datos_ParametrizacionTXT();
+        }
+
+        private void Button6_ClickAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            try
+            {
+                if (rSeleccPagos > 0)
+                {
+
+                    for (int row = 0; row <= Grid1.Rows.Count - 1; row++)
+                    {
+                        if (((SAPbouiCOM.CheckBoxColumn)Grid1.Columns.Item("Selec.")).IsChecked(row))
+                        {
+                            SAPbobsCOM.Payments oDrf = (SAPbobsCOM.Payments)oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oPaymentsDrafts);
+                            oDrf.DocObjectCode = SAPbobsCOM.BoPaymentsObjectType.bopot_OutgoingPayments;
+                            int DocEntry = Convert.ToInt32(Grid1.DataTable.GetValue("N° Interno", row));
+
+                            if (oDrf.GetByKey(DocEntry))
+                                if (oDrf.SaveDraftToDocument() == 0)
+                                    Application.SBO_Application.StatusBar.SetText("Created " + oCompany.GetNewObjectKey(), SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
+                                else
+                                    Application.SBO_Application.StatusBar.SetText(oCompany.GetLastErrorDescription(), SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+                        }
+                    }
+                }
+
+            }
+            catch (Exception) { }
+           
+        }
 
         //***********************************************************************************************************************************************
         //***************** PROCEDIMIENTOS Y FUNCIONES **************************************************************************************************
@@ -600,7 +665,7 @@ namespace TransferenciasBancarias.Capa_Presentacion
                 Formatear_Grid_Pendientes();
                 StaticText9.Caption = "Total Pagos : " + DT_PEND.Rows.Count.ToString();
             }
-            catch (Exception){}
+            catch (Exception) { }
         }
 
         private static void Formatear_Grid_Pendientes()
@@ -609,64 +674,77 @@ namespace TransferenciasBancarias.Capa_Presentacion
             {
                 oGrid = (SAPbouiCOM.Grid)oForm.Items.Item("Item_4").Specific;
 
-                SAPbouiCOM.EditTextColumn oEditCol = (SAPbouiCOM.EditTextColumn)oGrid.Columns.Item(0);
-                oEditCol.LinkedObjectType = "140";
-                oEditCol = (SAPbouiCOM.EditTextColumn)oGrid.Columns.Item(3);
-                oEditCol.LinkedObjectType = "2";
-                oEditCol.Width += 13;
-                oEditCol = (SAPbouiCOM.EditTextColumn)oGrid.Columns.Item(5);
-                oEditCol.LinkedObjectType = "1";
-                oEditCol = (SAPbouiCOM.EditTextColumn)oGrid.Columns.Item("Facturas");
-                oEditCol.LinkedObjectType = "63";
-                oEditCol = (SAPbouiCOM.EditTextColumn)oGrid.Columns.Item("Recepciones");
-                oEditCol.LinkedObjectType = "63";
-                oEditCol = (SAPbouiCOM.EditTextColumn)oGrid.Columns.Item("Ordenes");
-                oEditCol.LinkedObjectType = "63";
-
-                List<int> ColumnasJustificadas = new List<int>(new int[] { 2, 5, 7, 8, 10, 15, 16, 17, 18, 19, 20 });
-                List<int> ColumnasEnfasis = new List<int>(new int[] { 0, 3, 5, 8, 10, 15, 16, 17, 18, 19, 20 });
-                List<int> ColumnasNoVisibles = new List<int>(new int[] { 11, 12, 21, 22, 24 });
-
-                oGrid.Item.Enabled = false;
-
-                for (int iCols = 0; iCols <= oGrid.Columns.Count - 1; iCols++)
+                try
                 {
-                    oGrid.Columns.Item(iCols).BackColor = Funciones.Color_RGB_SAP(250, 255, 255);
-                    if (ColumnasJustificadas.Contains(iCols))
-                    {
-                        oGrid.Columns.Item(iCols).RightJustified = true;
-                    }
-                    if (ColumnasEnfasis.Contains(iCols))
-                    {
-                        oGrid.Columns.Item(iCols).BackColor = Funciones.Color_RGB_SAP(250, 250, 210);
-                    }
-                    if (ColumnasNoVisibles.Contains(iCols))
-                    {
-                        oGrid.Columns.Item(iCols).Visible = false;
-                    }
-
-                    if (iCols > 24)
-                        oGrid.Columns.Item(iCols).Type = SAPbouiCOM.BoGridColumnType.gct_CheckBox;
+                    SAPbouiCOM.EditTextColumn oEditCol = (SAPbouiCOM.EditTextColumn)oGrid.Columns.Item(0);
+                    oEditCol.LinkedObjectType = "140";
+                    oEditCol = (SAPbouiCOM.EditTextColumn)oGrid.Columns.Item(3);
+                    oEditCol.LinkedObjectType = "2";
+                    oEditCol.Width += 13;
+                    oEditCol = (SAPbouiCOM.EditTextColumn)oGrid.Columns.Item(5);
+                    oEditCol.LinkedObjectType = "1";
+                    oEditCol = (SAPbouiCOM.EditTextColumn)oGrid.Columns.Item("Facturas");
+                    oEditCol.LinkedObjectType = "63";
+                    oEditCol = (SAPbouiCOM.EditTextColumn)oGrid.Columns.Item("Recepciones");
+                    oEditCol.LinkedObjectType = "63";
+                    oEditCol = (SAPbouiCOM.EditTextColumn)oGrid.Columns.Item("Ordenes");
+                    oEditCol.LinkedObjectType = "63";
                 }
+                catch { }
 
-                for (int i = 1; i < oGrid.Rows.Count; i++)
+                try
                 {
-                    decimal dFacturado = !string.IsNullOrEmpty(oGrid.DataTable.GetValue("Monto Facturas", i - 1).ToString())
-                                         ? decimal.Parse(oGrid.DataTable.GetValue("Monto Facturas", i - 1).ToString()) : 0;
-                    decimal dRecepcionado = !string.IsNullOrEmpty(oGrid.DataTable.GetValue("Monto Recepciones", i - 1).ToString())
-                                            ? decimal.Parse(oGrid.DataTable.GetValue("Monto Recepciones", i - 1).ToString()) :  0;
-                    decimal dOrdenado = !string.IsNullOrEmpty(oGrid.DataTable.GetValue("Monto Facturas", i - 1).ToString())
-                                        ? decimal.Parse(oGrid.DataTable.GetValue("Monto Facturas", i - 1).ToString()) : 0;
-                    if (dFacturado != dRecepcionado || dFacturado != dOrdenado)
+                    List<int> ColumnasJustificadas = new List<int>(new int[] { 2, 5, 7, 8, 10, 15, 16, 17, 18, 19, 20 });
+                    List<int> ColumnasEnfasis = new List<int>(new int[] { 0, 3, 5, 8, 10, 15, 16, 17, 18, 19, 20 });
+                    List<int> ColumnasNoVisibles = new List<int>(new int[] { 11, 12, 21, 22, 24 });
+
+                    oGrid.Item.Enabled = false;
+
+                    for (int iCols = 0; iCols <= oGrid.Columns.Count - 1; iCols++)
                     {
-                        oGrid.CommonSetting.SetCellFontColor(i, 2, Funciones.Color_RGB_SAP(255, 0, 0));
-                        oGrid.CommonSetting.SetCellFontColor(i, 11, Funciones.Color_RGB_SAP(255, 0, 0));
+                        oGrid.Columns.Item(iCols).BackColor = Funciones.Color_RGB_SAP(250, 255, 255);
+                        if (ColumnasJustificadas.Contains(iCols))
+                        {
+                            oGrid.Columns.Item(iCols).RightJustified = true;
+                        }
+                        if (ColumnasEnfasis.Contains(iCols))
+                        {
+                            oGrid.Columns.Item(iCols).BackColor = Funciones.Color_RGB_SAP(250, 250, 210);
+                        }
+                        if (ColumnasNoVisibles.Contains(iCols))
+                        {
+                            oGrid.Columns.Item(iCols).Visible = false;
+                        }
+
+                        if (iCols > 24)
+                            oGrid.Columns.Item(iCols).Type = SAPbouiCOM.BoGridColumnType.gct_CheckBox;
                     }
+                }
+                catch { }
+
+                try
+                {
+                    for (int i = 0; i <= oGrid.Rows.Count - 1; i++)
+                    {
+                        decimal dFacturado = !string.IsNullOrEmpty(oGrid.DataTable.GetValue("Monto Facturas", i).ToString())
+                                             ? decimal.Parse(oGrid.DataTable.GetValue("Monto Facturas", i).ToString()) : 0;
+                        decimal dRecepcionado = !string.IsNullOrEmpty(oGrid.DataTable.GetValue("Monto Recepciones", i).ToString())
+                                                ? decimal.Parse(oGrid.DataTable.GetValue("Monto Recepciones", i).ToString()) : 0;
+                        decimal dOrdenado = !string.IsNullOrEmpty(oGrid.DataTable.GetValue("Monto Facturas", i).ToString())
+                                            ? decimal.Parse(oGrid.DataTable.GetValue("Monto Facturas", i).ToString()) : 0;
+                        if (dFacturado != dRecepcionado || dFacturado != dOrdenado)
+                        {
+                            oGrid.CommonSetting.SetCellFontColor(i + 1, 2, Funciones.Color_RGB_SAP(255, 0, 0));
+                            oGrid.CommonSetting.SetCellFontColor(i + 1, 11, Funciones.Color_RGB_SAP(255, 0, 0));
+                        }
                         //oGrid.CommonSetting.SetRowBackColor(i,Funciones.Color_RGB_SAP(250, 250, 210));
+                    }
                 }
+                catch { }
                 Funciones.Numero_Fila_Grid(oGrid);
+
             }
-            catch (Exception){}
+            catch (Exception) { }
         }
 
         private void Cargar_Grid_Autorizados()
@@ -682,6 +760,7 @@ namespace TransferenciasBancarias.Capa_Presentacion
                 Grid1.DataTable = NPagosAutorizados.Listar(FecIni, FecFin, DT_AUTO);
                 Formatear_Grid_Autorizados();
                 StaticText10.Caption = "Total Pagos : " + DT_AUTO.Rows.Count.ToString();
+
             }
             catch (Exception) { }
         }
@@ -714,25 +793,30 @@ namespace TransferenciasBancarias.Capa_Presentacion
 
                 //oGrid.Item.Enabled = false;
 
-                for (int iCols = 0; iCols <= oGrid.Columns.Count - 1; iCols++)
+                try
                 {
-                    oGrid.Columns.Item(iCols).BackColor = Funciones.Color_RGB_SAP(250, 255, 255);
-                    oGrid.Columns.Item(iCols).Editable = iCols > 0 ? false : true;
-                    if (ColumnasJustificadas.Contains(iCols + 1))
+                    for (int iCols = 0; iCols <= oGrid.Columns.Count - 1; iCols++)
                     {
-                        oGrid.Columns.Item(iCols + 1).RightJustified = true;
+                        oGrid.Columns.Item(iCols).BackColor = Funciones.Color_RGB_SAP(250, 255, 255);
+                        oGrid.Columns.Item(iCols).Editable = iCols > 0 ? false : true;
+                        if (ColumnasJustificadas.Contains(iCols + 1))
+                        {
+                            oGrid.Columns.Item(iCols + 1).RightJustified = true;
+                        }
+                        if (ColumnasEnfasis.Contains(iCols + 1))
+                        {
+                            oGrid.Columns.Item(iCols + 1).BackColor = Funciones.Color_RGB_SAP(250, 250, 210);
+                        }
+                        if (ColumnasNoVisibles.Contains(iCols + 1))
+                        {
+                            oGrid.Columns.Item(iCols + 1).Visible = false;
+                        }
+                        if (iCols > 26 && (iCols < oGrid.Columns.Count))
+                            oGrid.Columns.Item(iCols + 1).Type = SAPbouiCOM.BoGridColumnType.gct_CheckBox;
                     }
-                    if (ColumnasEnfasis.Contains(iCols + 1))
-                    {
-                        oGrid.Columns.Item(iCols + 1).BackColor = Funciones.Color_RGB_SAP(250, 250, 210);
-                    }
-                    if (ColumnasNoVisibles.Contains(iCols + 1))
-                    {
-                        oGrid.Columns.Item(iCols + 1).Visible = false;
-                    }
-                    if (iCols > 25)
-                        oGrid.Columns.Item(iCols + 1).Type = SAPbouiCOM.BoGridColumnType.gct_CheckBox;
                 }
+                catch { }
+               
                 Funciones.Numero_Fila_Grid(oGrid);
             }
             catch (Exception) { }
@@ -745,7 +829,7 @@ namespace TransferenciasBancarias.Capa_Presentacion
                 string sIni = oForm.DataSources.UserDataSources.Item("FECINIT").ValueEx;
                 string sFin = oForm.DataSources.UserDataSources.Item("FECFINT").ValueEx;
 
-                DateTime FecIni = sIni.Trim() == "" ? new DateTime(1900, 01, 01) : DateTime.ParseExact(sIni, "yyyyddMM", CultureInfo.InvariantCulture); 
+                DateTime FecIni = sIni.Trim() == "" ? new DateTime(1900, 01, 01) : DateTime.ParseExact(sIni, "yyyyddMM", CultureInfo.InvariantCulture);
                 DateTime FecFin = sFin.Trim() == "" ? new DateTime(2100, 01, 01) : DateTime.ParseExact(sFin, "yyyyMMdd", CultureInfo.InvariantCulture);
 
                 Grid2.DataTable = NPagosTranferencia.Listar(FecIni, FecFin, DT_TRAN);
@@ -787,7 +871,7 @@ namespace TransferenciasBancarias.Capa_Presentacion
                 for (int iCols = 0; iCols <= oGrid.Columns.Count - 1; iCols++)
                 {
                     oGrid.Columns.Item(iCols).BackColor = Funciones.Color_RGB_SAP(250, 255, 255);
-                    oGrid.Columns.Item(iCols).Editable = iCols > 0 ? false: true;
+                    oGrid.Columns.Item(iCols).Editable = iCols > 0 ? false : true;
                     if (ColumnasJustificadas.Contains(iCols))
                         oGrid.Columns.Item(iCols).RightJustified = true;
                     if (ColumnasEnfasis.Contains(iCols))
@@ -829,9 +913,9 @@ namespace TransferenciasBancarias.Capa_Presentacion
             {
                 oGrid = (SAPbouiCOM.Grid)oForm.Items.Item("Item_63").Specific;
 
-                List<int> ColumnasJustificadas = new List<int>(new int[] { 1, 2, 3});
+                List<int> ColumnasJustificadas = new List<int>(new int[] { 1, 2, 3 });
                 List<int> ColumnasEnfasis = new List<int>(new int[] { 2, 6 });
-                List<int> ColumnasNoVisibles = new List<int>(new int[] { 9,10,11,12,13,14,15,16,17,18 });
+                List<int> ColumnasNoVisibles = new List<int>(new int[] { 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 });
 
                 oGrid.Item.Enabled = false;
 
@@ -876,7 +960,7 @@ namespace TransferenciasBancarias.Capa_Presentacion
                 Formatear_Grid_Historico_Pagos();
             }
             catch (Exception) { }
-            finally{oForm.Freeze(false);}
+            finally { oForm.Freeze(false); }
         }
 
         private static void Formatear_Grid_Historico_Pagos()
@@ -922,7 +1006,7 @@ namespace TransferenciasBancarias.Capa_Presentacion
                             oGrid.Columns.Item(iCols).Visible = false;
                         }
                     }
-                        Funciones.Numero_Fila_Grid(oGrid);
+                    Funciones.Numero_Fila_Grid(oGrid);
                 }
             }
             catch (Exception) { }
@@ -932,8 +1016,8 @@ namespace TransferenciasBancarias.Capa_Presentacion
         {
             try
             {
-                string sUsuAct = CheckBox0.Checked ? Funciones.sNomUsuActual: "";
-                    
+                string sUsuAct = CheckBox0.Checked ? Funciones.sNomUsuActual : "";
+
                 Application.SBO_Application.ActivateMenuItem("14851");
 
                 SAPbouiCOM.Form oFormP = Application.SBO_Application.Forms.ActiveForm;
@@ -943,13 +1027,13 @@ namespace TransferenciasBancarias.Capa_Presentacion
 
                 SAPbouiCOM.UserDataSource oUDS = oFormP.DataSources.UserDataSources.Item("UD_R");
                 oUDS.ValueEx = this.UIAPIRawForm.UniqueID;   //Asignamos el FormUID de Formulario al Valor del  User Data Source
-                 
+
 
                 //oFormP.Select();
 
                 oFormP.Freeze(true);
 
-                List<string> CheckBoxMarcar = new List<string>(new string[] { "32"});
+                List<string> CheckBoxMarcar = new List<string>(new string[] { "32" });
 
                 foreach (string sItem in CheckBoxMarcar)
                 {
@@ -967,7 +1051,7 @@ namespace TransferenciasBancarias.Capa_Presentacion
 
                 foreach (string sItem in EditTextLimpiar)
                 {
-                    if((sItem == "16" || sItem =="19") && sUsuAct.Trim().Length > 0)
+                    if ((sItem == "16" || sItem == "19") && sUsuAct.Trim().Length > 0)
                         ((SAPbouiCOM.EditText)oFormP.Items.Item(sItem).Specific).Value = sUsuAct;
                     else
                         ((SAPbouiCOM.EditText)oFormP.Items.Item(sItem).Specific).Value = "";
@@ -1052,7 +1136,7 @@ namespace TransferenciasBancarias.Capa_Presentacion
             catch (Exception) { }
         }
 
-         private void Cargar_Datos_ParametrizacionTXT()
+        private void Cargar_Datos_ParametrizacionTXT()
         {
             try
             {
@@ -1072,143 +1156,148 @@ namespace TransferenciasBancarias.Capa_Presentacion
                 EditText15.Value = DT_PARAM.GetValue("Info", 9).ToString();   //oGeneralData.GetProperty("U_PlantillaRendici");
                 EditText16.Value = DT_PARAM.GetValue("Info", 10).ToString();  //oGeneralData.GetProperty("U_DirectorioBanco");
                 EditText18.Value = DT_PARAM.GetValue("Info", 11).ToString();  //oGeneralData.GetProperty("U_DirectorioRespaldo");
+                EditText18.Value = DT_PARAM.GetValue("Info", 11).ToString();  //oGeneralData.GetProperty("U_DirectorioRespaldo");
+                oForm.DataSources.UserDataSources.Item("OptFlujo").ValueEx = DT_PARAM.GetValue("Info", 12).ToString();
 
             }
-            catch (Exception) {
-                Application.SBO_Application.StatusBar.SetText("Error en la Carga de los Parametros", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);             
+            catch (Exception)
+            {
+                Application.SBO_Application.StatusBar.SetText("Error en la Carga de los Parametros", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
             }
-           
+
         }
 
-         private void Actualizar_Datos_ParametrizacionTXT()
-         {
-             string sDirBanco = EditText16.Value.Trim();
-             string sDirServer = EditText18.Value.Trim();
+        private void Actualizar_Datos_ParametrizacionTXT()
+        {
+            string sDirBanco = EditText16.Value.Trim();
+            string sDirServer = EditText18.Value.Trim();
+            string FlujoActivo = oForm.DataSources.UserDataSources.Item("OptFlujo").ValueEx;
 
-             if (!Directory.Exists(sDirBanco))
-             {
-                 Application.SBO_Application.MessageBox("La Ruta para la Generacion del Archivo de Texto No existe, Se guardara en :" + NArchivoTransferencia.Ruta());
-                 sDirBanco = NArchivoTransferencia.Ruta();
-             }
+            if (!Directory.Exists(sDirBanco))
+            {
+                Application.SBO_Application.MessageBox("La Ruta para la Generacion del Archivo de Texto No existe, Se guardara en :" + NArchivoTransferencia.Ruta());
+                sDirBanco = NArchivoTransferencia.Ruta();
+            }
 
-             string Actulizacion = NParametrosTXT.ActualizarParametrosTXT(EditText6.Value.Trim()      //U_TipoRegistro
-                                                                          , EditText7.Value.Trim()    //U_Multifecha
-                                                                          , EditText8.Value.Trim()    //U_Modalidad
-                                                                          , EditText9.Value.Trim()    //U_Convenio
-                                                                          , EditText10.Value.Trim()   //U_TipoPago
-                                                                          , EditText11.Value.Trim()   //U_CodigoPlantilla
-                                                                          , EditText12.Value.Trim()   //U_RUTEmpresa
-                                                                          , EditText13.Value.Trim()   //U_RUTFilial
-                                                                          , EditText14.Value.Trim()   //U_CorreoEmp
-                                                                          , EditText15.Value.Trim()   //U_PlantillaRendici
-                                                                          , sDirBanco.Trim()          //U_DirectorioBanco
-                                                                          , sDirServer.Trim());       //U_DirectorioRespaldo
+            string Actulizacion = NParametrosTXT.ActualizarParametrosTXT(EditText6.Value.Trim()      //U_TipoRegistro
+                                                                         , EditText7.Value.Trim()    //U_Multifecha
+                                                                         , EditText8.Value.Trim()    //U_Modalidad
+                                                                         , EditText9.Value.Trim()    //U_Convenio
+                                                                         , EditText10.Value.Trim()   //U_TipoPago
+                                                                         , EditText11.Value.Trim()   //U_CodigoPlantilla
+                                                                         , EditText12.Value.Trim()   //U_RUTEmpresa
+                                                                         , EditText13.Value.Trim()   //U_RUTFilial
+                                                                         , EditText14.Value.Trim()   //U_CorreoEmp
+                                                                         , EditText15.Value.Trim()   //U_PlantillaRendici
+                                                                         , sDirBanco.Trim()          //U_DirectorioBanco
+                                                                         , sDirServer.Trim()         //U_DirectorioRespaldo
+                                                                         , FlujoActivo.Trim());      //U_FlujoActivo
 
-             if (Actulizacion == "S")
-             {
-                 Application.SBO_Application.StatusBar.SetText("Actualizacion Exitosa de los Parametros", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
-                 DT_PARAM = NParametrosTXT.ObtenerParametrosTXT(DT_SQL);
-             }
-             else
-                 Application.SBO_Application.StatusBar.SetText("Error en la Actualizacion de los Parametros", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);             
-                
-         }
+            if (Actulizacion == "S")
+            {
+                Application.SBO_Application.StatusBar.SetText("Actualizacion Exitosa de los Parametros", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
+                DT_PARAM = NParametrosTXT.ObtenerParametrosTXT(DT_SQL);
+            }
+            else
+                Application.SBO_Application.StatusBar.SetText("Error en la Actualizacion de los Parametros", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
 
-         private static string AnularArchivoTXT()
-         {
-             string resp = "N";
-             try
-             {
-                 SAPbouiCOM.DataTable DT_HIST = oForm.DataSources.DataTables.Item("DT_HIST");
-                 oGrid = (SAPbouiCOM.Grid)oForm.Items.Item("Item_63").Specific;
-                 int nRow = oGrid.Rows.SelectedRows.Item(0, SAPbouiCOM.BoOrderType.ot_RowOrder);
-                 resp = NHistoricoTXT.UpdateHistoricoTXT(DT_HIST.GetValue("U_Nombre", nRow).ToString()
-                                                          , DT_HIST.GetValue("U_PathBanco", nRow).ToString()
-                                                          , DT_HIST.GetValue("U_PathRespaldo", nRow).ToString()
-                                                          , DT_HIST.GetValue("U_NumPagos", nRow).ToString()
-                                                          , Convert.ToDouble(DT_HIST.GetValue("U_MontoTotal", nRow).ToString().Replace(".", ""))
-                                                          , DT_HIST.GetValue("U_Usuario", nRow).ToString()
-                                                          , Convert.ToDateTime(DT_HIST.GetValue("U_Fecha", nRow))
-                                                          , "Anulado"
-                                                          , Funciones.Nombre_Usuario_Actual()
-                                                          , DateTime.Now
-                                                          , DT_HIST.GetValue("Code", nRow).ToString());
-                 Funciones.Delete_File(DT_HIST.GetValue("U_PathBanco", nRow).ToString() + DT_HIST.GetValue("U_Nombre", nRow).ToString());
-             }
-             catch (Exception) { }
-             return resp;
-         }
+        }
 
-         private static void AbrirConsultaFacturas(SAPbouiCOM.Grid oGrid, int nRow)
-         {
-             try
-             {
-                 string sDocEntry = oGrid.DataTable.GetValue("N° Interno", nRow).ToString();
-                 string sPago = oGrid.DataTable.GetValue("N° Pago", nRow).ToString();
-                 string sProv = oGrid.DataTable.GetValue("Proveedor", nRow).ToString();
-                 string sFecha = Convert.ToDateTime(oGrid.DataTable.GetValue("Fecha Pago", nRow)).ToString("dd/MM/yyyy");
+        private static string AnularArchivoTXT()
+        {
+            string resp = "N";
+            try
+            {
+                SAPbouiCOM.DataTable DT_HIST = oForm.DataSources.DataTables.Item("DT_HIST");
+                oGrid = (SAPbouiCOM.Grid)oForm.Items.Item("Item_63").Specific;
+                int nRow = oGrid.Rows.SelectedRows.Item(0, SAPbouiCOM.BoOrderType.ot_RowOrder);
+                resp = NHistoricoTXT.UpdateHistoricoTXT(DT_HIST.GetValue("U_Nombre", nRow).ToString()
+                                                         , DT_HIST.GetValue("U_PathBanco", nRow).ToString()
+                                                         , DT_HIST.GetValue("U_PathRespaldo", nRow).ToString()
+                                                         , DT_HIST.GetValue("U_NumPagos", nRow).ToString()
+                                                         , Convert.ToDouble(DT_HIST.GetValue("U_MontoTotal", nRow).ToString().Replace(".", ""))
+                                                         , DT_HIST.GetValue("U_Usuario", nRow).ToString()
+                                                         , Convert.ToDateTime(DT_HIST.GetValue("U_Fecha", nRow))
+                                                         , "Anulado"
+                                                         , Funciones.Nombre_Usuario_Actual()
+                                                         , DateTime.Now
+                                                         , DT_HIST.GetValue("Code", nRow).ToString());
+                Funciones.Delete_File(DT_HIST.GetValue("U_PathBanco", nRow).ToString() + DT_HIST.GetValue("U_Nombre", nRow).ToString());
+            }
+            catch (Exception) { }
+            return resp;
+        }
 
-                 AbrirPantallaConsultaDocumentos("Facturas Asociadas al Pago", "FACTU", sPago, sProv, sFecha, sDocEntry);
-             }
-             catch (Exception) { }
-         }
+        private static void AbrirConsultaFacturas(SAPbouiCOM.Grid oGrid, int nRow)
+        {
+            try
+            {
+                string sDocEntry = oGrid.DataTable.GetValue("N° Interno", nRow).ToString();
+                string sPago = oGrid.DataTable.GetValue("N° Pago", nRow).ToString();
+                string sProv = oGrid.DataTable.GetValue("Proveedor", nRow).ToString();
+                string sFecha = Convert.ToDateTime(oGrid.DataTable.GetValue("Fecha Pago", nRow)).ToString("dd/MM/yyyy");
 
-         private static void AbrirConsultaRecepciones(SAPbouiCOM.Grid oGrid, int nRow)
-         {
-             try
-             {
-                 string sDocEntry = oGrid.DataTable.GetValue("N° Interno", nRow).ToString();
-                 string sPago = oGrid.DataTable.GetValue("N° Pago", nRow).ToString();
-                 string sProv = oGrid.DataTable.GetValue("Proveedor", nRow).ToString();
-                 string sFecha = Convert.ToDateTime(oGrid.DataTable.GetValue("Fecha Pago", nRow)).ToString("dd/MM/yyyy");
+                AbrirPantallaConsultaDocumentos("Facturas Asociadas al Pago", "FACTU", sPago, sProv, sFecha, sDocEntry);
+            }
+            catch (Exception) { }
+        }
 
-                 AbrirPantallaConsultaDocumentos("Recepciones Asociadas al Pago", "RECEP", sPago, sProv, sFecha, sDocEntry);
-             }
-             catch (Exception) { }
-         }
+        private static void AbrirConsultaRecepciones(SAPbouiCOM.Grid oGrid, int nRow)
+        {
+            try
+            {
+                string sDocEntry = oGrid.DataTable.GetValue("N° Interno", nRow).ToString();
+                string sPago = oGrid.DataTable.GetValue("N° Pago", nRow).ToString();
+                string sProv = oGrid.DataTable.GetValue("Proveedor", nRow).ToString();
+                string sFecha = Convert.ToDateTime(oGrid.DataTable.GetValue("Fecha Pago", nRow)).ToString("dd/MM/yyyy");
 
-         private static void AbrirConsultaOrdenesCompra(SAPbouiCOM.Grid oGrid, int nRow)
-         {
-             try
-             {
-                 string sDocEntry = oGrid.DataTable.GetValue("N° Interno", nRow).ToString();
-                 string sPago = oGrid.DataTable.GetValue("N° Pago", nRow).ToString();
-                 string sProv = oGrid.DataTable.GetValue("Proveedor", nRow).ToString();
-                 string sFecha = Convert.ToDateTime(oGrid.DataTable.GetValue("Fecha Pago", nRow)).ToString("dd/MM/yyyy");
+                AbrirPantallaConsultaDocumentos("Recepciones Asociadas al Pago", "RECEP", sPago, sProv, sFecha, sDocEntry);
+            }
+            catch (Exception) { }
+        }
 
-                 AbrirPantallaConsultaDocumentos("Ordenes de Compra Asociadas al Pago", "ORDEN", sPago, sProv, sFecha, sDocEntry);
-             }
-             catch (Exception) { }
-         }
+        private static void AbrirConsultaOrdenesCompra(SAPbouiCOM.Grid oGrid, int nRow)
+        {
+            try
+            {
+                string sDocEntry = oGrid.DataTable.GetValue("N° Interno", nRow).ToString();
+                string sPago = oGrid.DataTable.GetValue("N° Pago", nRow).ToString();
+                string sProv = oGrid.DataTable.GetValue("Proveedor", nRow).ToString();
+                string sFecha = Convert.ToDateTime(oGrid.DataTable.GetValue("Fecha Pago", nRow)).ToString("dd/MM/yyyy");
 
-         private static void AbrirPantallaConsultaDocumentos(string Titulo, string TipoDoc, string sPago, string sProv, string sFecha, string sDocEntry)
-         {
+                AbrirPantallaConsultaDocumentos("Ordenes de Compra Asociadas al Pago", "ORDEN", sPago, sProv, sFecha, sDocEntry);
+            }
+            catch (Exception) { }
+        }
 
-             try
-             {
-                 Capa_Presentacion.ConsultaDoc oConsultaDoc = new Capa_Presentacion.ConsultaDoc();
+        private static void AbrirPantallaConsultaDocumentos(string Titulo, string TipoDoc, string sPago, string sProv, string sFecha, string sDocEntry)
+        {
 
-                 oConsultaDoc.UIAPIRawForm.DataSources.UserDataSources.Item("UD_0").ValueEx = oForm.UniqueID;
+            try
+            {
+                Capa_Presentacion.ConsultaDoc oConsultaDoc = new Capa_Presentacion.ConsultaDoc();
 
-                 oConsultaDoc.UIAPIRawForm.Title = Titulo;
-                 oConsultaDoc.UIAPIRawForm.DataSources.UserDataSources.Item("UD_ENTRY").ValueEx = sDocEntry;
-                 oConsultaDoc.UIAPIRawForm.DataSources.UserDataSources.Item("UD_PAG").ValueEx = sPago;
-                 oConsultaDoc.UIAPIRawForm.DataSources.UserDataSources.Item("UD_PRO").ValueEx = sProv;
-                 oConsultaDoc.UIAPIRawForm.DataSources.UserDataSources.Item("UD_FEC").ValueEx = sFecha;
-                 switch (oForm.PaneLevel)// Si el panel es 1 o 2 los pagos son tipos borrador.
-                 {
-                     case 3:
-                         oConsultaDoc.UIAPIRawForm.DataSources.UserDataSources.Item("UD_DOC").ValueEx = TipoDoc + "D";
-                         break;
-                     default:
-                         oConsultaDoc.UIAPIRawForm.DataSources.UserDataSources.Item("UD_DOC").ValueEx = TipoDoc + "B";
-                         break;
-                 }
+                oConsultaDoc.UIAPIRawForm.DataSources.UserDataSources.Item("UD_0").ValueEx = oForm.UniqueID;
 
-                 oConsultaDoc.Show();
-             }
-             catch (Exception) { }
-         }
+                oConsultaDoc.UIAPIRawForm.Title = Titulo;
+                oConsultaDoc.UIAPIRawForm.DataSources.UserDataSources.Item("UD_ENTRY").ValueEx = sDocEntry;
+                oConsultaDoc.UIAPIRawForm.DataSources.UserDataSources.Item("UD_PAG").ValueEx = sPago;
+                oConsultaDoc.UIAPIRawForm.DataSources.UserDataSources.Item("UD_PRO").ValueEx = sProv;
+                oConsultaDoc.UIAPIRawForm.DataSources.UserDataSources.Item("UD_FEC").ValueEx = sFecha;
+                switch (oForm.PaneLevel)// Si el panel es 1 o 2 los pagos son tipos borrador.
+                {
+                    case 3:
+                        oConsultaDoc.UIAPIRawForm.DataSources.UserDataSources.Item("UD_DOC").ValueEx = TipoDoc + "D";
+                        break;
+                    default:
+                        oConsultaDoc.UIAPIRawForm.DataSources.UserDataSources.Item("UD_DOC").ValueEx = TipoDoc + "B";
+                        break;
+                }
+
+                oConsultaDoc.Show();
+            }
+            catch (Exception) { }
+        }
 
 
         private SAPbouiCOM.Folder Folder0;
@@ -1367,5 +1456,10 @@ namespace TransferenciasBancarias.Capa_Presentacion
         private SAPbouiCOM.StaticText StaticText70;
         private SAPbouiCOM.StaticText StaticText71;
         private SAPbouiCOM.Button Button9;
+
+        private void Form_LoadAfter(SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            Application.SBO_Application.StatusBar.SetText("", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_None);
+        }
     }
 }

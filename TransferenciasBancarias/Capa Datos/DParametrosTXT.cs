@@ -23,6 +23,7 @@ namespace TransferenciasBancarias.Capa_Datos
         private string _U_PlantillaRendici;
         private string _U_DirectorioBanco;
         private string _U_DirectorioRespaldo;
+        private string _U_FlujoActivo;
 
 
         public string U_TipoRegistro
@@ -86,6 +87,12 @@ namespace TransferenciasBancarias.Capa_Datos
             set { _U_DirectorioRespaldo = value; }
         }
 
+        public string U_FlujoActivo
+        {
+            get { return _U_FlujoActivo; }
+            set { _U_FlujoActivo = value; }
+        }
+
         //Constructor Vacio
         public DParametrosTXT()
         {
@@ -102,7 +109,8 @@ namespace TransferenciasBancarias.Capa_Datos
                               ,string U_CorreoEmp
                               ,string U_PlantillaRendici
                               ,string U_DirectorioBanco
-                              ,string U_DirectorioRespaldo)
+                              ,string U_DirectorioRespaldo
+                              ,string U_FlujoActivo)
         {
             this.U_TipoRegistro = U_TipoRegistro;
             this.U_Multifecha= U_Multifecha;
@@ -116,6 +124,7 @@ namespace TransferenciasBancarias.Capa_Datos
             this.U_PlantillaRendici= U_PlantillaRendici;
             this.U_DirectorioBanco = U_DirectorioBanco;
             this.U_DirectorioRespaldo = U_DirectorioRespaldo;
+            this.U_FlujoActivo = U_FlujoActivo;
         }   
 
         public SAPbouiCOM.DataTable ObtenerParametrosTXT(SAPbouiCOM.DataTable DT_PARAM)
@@ -146,7 +155,7 @@ namespace TransferenciasBancarias.Capa_Datos
                 DT_PARAM.Clear();
                 DT_PARAM.Columns.Add("Info", SAPbouiCOM.BoFieldsType.ft_Text);
 
-                DT_PARAM.Rows.Add(12);
+                DT_PARAM.Rows.Add(13);
                 DT_PARAM.SetValue("Info", 0, oGeneralData.GetProperty("U_TipoRegistro"));
                 DT_PARAM.SetValue("Info", 1, oGeneralData.GetProperty("U_Multifecha"));
                 DT_PARAM.SetValue("Info", 2, oGeneralData.GetProperty("U_Modalidad"));
@@ -159,6 +168,7 @@ namespace TransferenciasBancarias.Capa_Datos
                 DT_PARAM.SetValue("Info", 9, oGeneralData.GetProperty("U_PlantillaRendici"));
                 DT_PARAM.SetValue("Info", 10, oGeneralData.GetProperty("U_DirectorioBanco"));
                 DT_PARAM.SetValue("Info", 11, oGeneralData.GetProperty("U_DirectorioRespaldo"));
+                DT_PARAM.SetValue("Info", 12, oGeneralData.GetProperty("U_FlujoActivo"));
 
 
             }
@@ -206,6 +216,7 @@ namespace TransferenciasBancarias.Capa_Datos
                 oGeneralData.SetProperty("U_PlantillaRendici", Parametros.U_PlantillaRendici.Trim());
                 oGeneralData.SetProperty("U_DirectorioBanco", Parametros.U_DirectorioBanco.Trim());
                 oGeneralData.SetProperty("U_DirectorioRespaldo", Parametros.U_DirectorioRespaldo.Trim());
+                oGeneralData.SetProperty("U_FlujoActivo", Parametros.U_FlujoActivo.Trim());
 
                 oGeneralService.Update(oGeneralData);
 

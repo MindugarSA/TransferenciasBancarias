@@ -40,7 +40,7 @@ namespace TransferenciasBancarias.Capa_Datos
 
             try
             {
-                string sp = @"Min_Bancos_Consultar_Pagos_Depositos_Autorizados 
+                string sp = @"EXEC [dbo].[Min_Bancos_Consultar_Pagos_Depositos_Autorizados] 
                                 @FechaDesde = N'" + Pagos_Autorizados.FechaIni.ToString("MM/dd/yyyy") + @"',
 		                        @FechaHasta = N'" + Pagos_Autorizados.FechaFin.ToString("MM/dd/yyyy") + "'";
                 DT_Resultado.ExecuteQuery(sp);

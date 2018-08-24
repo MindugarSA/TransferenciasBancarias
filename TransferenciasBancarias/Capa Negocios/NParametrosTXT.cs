@@ -19,7 +19,8 @@ namespace TransferenciasBancarias.Capa_Negocios
 
         public static string ActualizarParametrosTXT(string U_TipoRegistro, string U_Multifecha, string U_Modalidad, string U_Convenio
                                                     , string U_TipoPago, string U_CodigoPlantilla, string U_RUTEmpresa, string U_RUTFilial
-                                                    , string U_CorreoEmp, string U_PlantillaRendici, string U_DirectorioBanco, string U_DirectorioRespaldo)
+                                                    , string U_CorreoEmp, string U_PlantillaRendici, string U_DirectorioBanco
+                                                    , string U_DirectorioRespaldo, string U_FlujoActivo)
         {
             DParametrosTXT Obj = new DParametrosTXT();
             Obj.U_TipoRegistro = U_TipoRegistro;
@@ -34,6 +35,7 @@ namespace TransferenciasBancarias.Capa_Negocios
             Obj.U_PlantillaRendici = U_PlantillaRendici;
             Obj.U_DirectorioBanco = U_DirectorioBanco;
             Obj.U_DirectorioRespaldo = U_DirectorioRespaldo; ;
+            Obj.U_FlujoActivo = U_FlujoActivo; ;
 
             return Obj.ActualizarParametrosTXT(Obj);
         }

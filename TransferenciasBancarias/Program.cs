@@ -10,7 +10,7 @@ namespace TransferenciasBancarias
         public static NumberFormatInfo oNumberFormatInfo = new NumberFormatInfo();
         public static SAPbouiCOM.Application SBO_Application = null;
         public static SAPbouiCOM.Form oForm = null;
-
+        public static SAPbobsCOM.Company oCompany = null;
 
         /// <summary>
         /// The main entry point for the application.
@@ -38,6 +38,7 @@ namespace TransferenciasBancarias
                 Application.SBO_Application.RightClickEvent += new SAPbouiCOM._IApplicationEvents_RightClickEventEventHandler(SBO_Application_RightClickEvent);
 
                 Capa_Datos.Conexion.Conectar_Aplicacion();
+                oCompany = Capa_Datos.Conexion.oCompany;
 
                 Funciones.sCodUsuActual = Capa_Datos.Conexion.sCodUsuActual;
                 Funciones.sAliasUsuActual = Capa_Datos.Conexion.sAliasUsuActual;

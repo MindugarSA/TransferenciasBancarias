@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 
 using SAPbouiCOM.Framework;
+using System.Data;
+using System.Data.SqlClient;
 
 
 namespace TransferenciasBancarias.Capa_Datos
@@ -18,6 +20,7 @@ namespace TransferenciasBancarias.Capa_Datos
         public static string sAliasUsuActual;
         public static string sNomUsuActual;
         public static string sCurrentCompanyDB;
+        public static string CnSQL = Properties.Settings.Default.Cn;
 
         public static void Conectar_Aplicacion()
         {

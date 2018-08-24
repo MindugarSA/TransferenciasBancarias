@@ -4,11 +4,15 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
+using System.Data;
+using System.Data.SqlClient;
+
 namespace TransferenciasBancarias.Capa_Datos
 {
     class DArchivoTransferencia
     {
         private string _Ruta;
+        public static SAPbobsCOM.Company oCompany = Conexion.oCompany;
 
         public string Ruta
         {
@@ -105,9 +109,12 @@ namespace TransferenciasBancarias.Capa_Datos
         {
             try
             {
+                oCompany = Program.oCompany;
+                SAPbobsCOM.Recordset recordset = (SAPbobsCOM.Recordset)oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
                 string sql = "";
                 string sNumPago = "";
                 int iNumAviso = 0;
+                DT_SQL.Clear();
                 DT_ROWS.Clear();
                 DT_ROWS.Columns.Add("Info", SAPbouiCOM.BoFieldsType.ft_Text);
 
@@ -118,18 +125,66 @@ namespace TransferenciasBancarias.Capa_Datos
                     {
                         iNumAviso += 1;
                         sNumPago = DT_DATOS.GetValue(2, i).ToString();
-                        sql = @"[dbo].[Min_Bancos_Generar_Detalle_Pagos_Archivo_PagoTXT_Formato610]
-		                       @NumPago = N'" + sNumPago + @"'
-                              ,@NumeroAviso = '" + iNumAviso.ToString() + "'";
-                        DT_SQL.ExecuteQuery(sql);
+                        //sql = @"EXEC [dbo].[Min_Bancos_Generar_Detalle_Pagos_Archivo_PagoTXT_Formato610]
+                        // @NumPago = N'" + sNumPago + @"'
+                        //      ,@NumeroAviso = '" + iNumAviso.ToString() + "'";
 
-                        if (!DT_SQL.IsEmpty)
+                        //DT_SQL.ExecuteQuery(sql);
+                        //recordset.DoQuery(sql);
+                        //recordset.MoveFirst();
+
+                        //if (!DT_SQL.IsEmpty)
+                        //{
+                        //    for (int j = 0; j <= DT_SQL.Rows.Count - 1; j++)
+                        //    {
+                        //        var Linea = DT_SQL.GetValue(0, j);
+                        //        var Linea2 = recordset.Fields.Item(0).Value;
+                        //        recordset.MoveNext();
+                        //        DT_ROWS.Rows.Add();
+                        //        DT_ROWS.SetValue(0, DT_ROWS.Rows.Count - 1, DT_SQL.GetValue(0, j).ToString());
+                        //        //Linea = Convert.ToString(DT_ROWS.GetValue(0, DT_ROWS.Rows.Count - 1));
+                        //    }
+                        //}
+
+                        // SE DEBIO USAR System.Dat.DataTable porque el DT de SAP truncaba los resultado del SP
+                        DataTable DtResultado = new DataTable();
+                        SqlConnection SlqCon = new SqlConnection();
+
+                        try
                         {
-                            for (int j = 0; j <= DT_SQL.Rows.Count - 1; j++)
+                            string sp = @"EXEC ["+oCompany.CompanyDB+ @"].[dbo].[Min_Bancos_Generar_Detalle_Pagos_Archivo_PagoTXT_Formato610]
+                                         @NumPago = N'" + sNumPago + @"'
+                                        ,@NumeroAviso = '" + iNumAviso.ToString() + "'";
+
+                            SlqCon.ConnectionString = Conexion.CnSQL;
+                            SqlCommand SqlCmd = new SqlCommand(sp, SlqCon);
+
+                            SlqCon.Open();
+                            //SqlCmd.CommandType = CommandType.Text;
+                            //SqlCmd.Parameters.AddWithValue("@NumPago", sNumPago);
+                            //SqlCmd.Parameters.AddWithValue("@NumeroAviso", iNumAviso.ToString());
+
+                            SqlDataAdapter SqlDat = new SqlDataAdapter(SqlCmd);
+                            SqlDat.Fill(DtResultado);
+
+                        }
+                        catch
+                        {
+                            DtResultado = null;
+                        }
+                        finally
+                        {
+                            if (SlqCon.State == ConnectionState.Open) SlqCon.Close();
+                        }
+
+
+                        if (DtResultado.Rows.Count > 0)
+                        {
+                            for (int j = 0; j <= DtResultado.Rows.Count - 1; j++)
                             {
-                                string Linea = Convert.ToString(DT_SQL.GetValue(0, j));
+                                var Linea = DtResultado.Rows[j][0];
                                 DT_ROWS.Rows.Add();
-                                DT_ROWS.SetValue(0, DT_ROWS.Rows.Count - 1, DT_SQL.GetValue(0, j).ToString());
+                                DT_ROWS.SetValue(0, DT_ROWS.Rows.Count - 1, Linea);
                                 //Linea = Convert.ToString(DT_ROWS.GetValue(0, DT_ROWS.Rows.Count - 1));
                             }
                         }
