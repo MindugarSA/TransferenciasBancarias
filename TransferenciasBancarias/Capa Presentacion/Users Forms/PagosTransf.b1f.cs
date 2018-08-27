@@ -223,15 +223,26 @@ namespace TransferenciasBancarias.Capa_Presentacion
 
         private void OnCustomInitialize()
         {
-            Application.SBO_Application.StatusBar.SetText("Cargando Datos", SAPbouiCOM.BoMessageTime.bmt_Medium, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
+            try
+            {
+                oForm = Application.SBO_Application.Forms.Item(this.UIAPIRawForm.UniqueID);
 
-            oForm = Application.SBO_Application.Forms.Item(this.UIAPIRawForm.UniqueID);
+                Application.SBO_Application.StatusBar.SetText("Cargando Datos, Espere un momento ...", SAPbouiCOM.BoMessageTime.bmt_Medium, SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
+                oForm.Freeze(true);
 
-            Cargar_Grids();
-            OptionBtn1.GroupWith("Item_75");
-            //oForm.DataSources.UserDataSources.Item("OptFlujo").ValueEx = "1";
+                Cargar_Grids();
+                OptionBtn1.GroupWith("Item_75");
+                //oForm.DataSources.UserDataSources.Item("OptFlujo").ValueEx = "1";
 
-            Folder0.Item.Click();
+                Folder0.Item.Click();
+            }
+            catch { }
+            finally
+            {
+                Application.SBO_Application.StatusBar.SetText("Datos Cargados", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
+                oForm.Freeze(false);
+            }
+
         }
 
         public static void Transferencia_MenuEvent(ref SAPbouiCOM.MenuEvent pVal, out bool BubbleEvent)
@@ -354,6 +365,62 @@ namespace TransferenciasBancarias.Capa_Presentacion
             oItem.Left = 16;
             oItem.Height = oForm.Height - 95;
             oItem.Width = oForm.Width - 45;
+
+            int dWidth = Convert.ToInt32(oForm.Items.Item("Item_0").Width * (45.76 / 100));
+
+            Grid3.Item.Width = dWidth;
+            Grid4.Item.Left = Grid3.Item.Left + dWidth + 14;
+            Grid4.Item.Width = dWidth;
+
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_5")).Top = 34;
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_7")).Top = 34;
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_9")).Top = 34;
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_64")).Top = 34;
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_5")).Left = 36;
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_7")).Left = 36;
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_9")).Left = 36;
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_64")).Left = 36;
+
+            oItem = oForm.Items.Item("Item_52");
+            oItem.Width = 418;
+
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_46")).Top = 294;
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_47")).Top = 294;
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_48")).Top = 315;
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_49")).Top = 315;
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_50")).Top = 334;
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_51")).Top = 334;
+
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_97")).Left = 678;
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_88")).Top = 303;
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_89")).Top = 322;
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_90")).Top = 342;
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_91")).Top = 357;
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_92")).Top = 377;
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_93")).Top = 395;
+
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_106")).Top = 303;
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_107")).Top = 322;
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_108")).Top = 342;
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_109")).Top = 357;
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_110")).Top = 377;
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_111")).Top = 395;
+
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_120")).Top = 303;
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_147")).Top = 322;
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_122")).Top = 342;
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_148")).Top = 357;
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_124")).Top = 377;
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_125")).Top = 395;
+
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_138")).Top = 303;
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_149")).Top = 322;
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_140")).Top = 342;
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_150")).Top = 357;
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_142")).Top = 377;
+            ((SAPbouiCOM.Item)oForm.Items.Item("Item_143")).Top = 395;
+
+
 
         }
 
@@ -633,7 +700,7 @@ namespace TransferenciasBancarias.Capa_Presentacion
 
             }
             catch (Exception) { }
-           
+
         }
 
         //***********************************************************************************************************************************************
@@ -816,7 +883,7 @@ namespace TransferenciasBancarias.Capa_Presentacion
                     }
                 }
                 catch { }
-               
+
                 Funciones.Numero_Fila_Grid(oGrid);
             }
             catch (Exception) { }
