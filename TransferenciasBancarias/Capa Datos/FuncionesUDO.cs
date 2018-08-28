@@ -24,7 +24,7 @@ namespace TransferenciasBancarias.Capa_Datos
             {
                 //get company service
                 if (!SBO_Company.Connected)
-                    Funciones.Conectar_Aplicacion();
+                    Conexion.Conectar_Aplicacion();
 
                 SAPbobsCOM.Recordset oRecorset = (SAPbobsCOM.Recordset)SBO_Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
 
@@ -32,10 +32,48 @@ namespace TransferenciasBancarias.Capa_Datos
                 oRecorset.DoQuery(sql);
                 nProx = (int)oRecorset.Fields.Item("Proximo").Value;
             }
-            catch (Exception){}
-            
+            catch (Exception) { }
 
             return nProx;
+        }
+
+        public static string LoadObjectInfoFromRecordset(ref object Objeto, string Table, string WhereCondition)
+        {
+            string rpta = "N";
+            SAPbobsCOM.Company SBO_Company = Conexion.oCompany;
+            try
+            {
+                //get company service
+                if (!SBO_Company.Connected)
+                    Conexion.Conectar_Aplicacion();
+
+                SAPbobsCOM.Recordset oRecordSet = (SAPbobsCOM.Recordset)SBO_Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+
+                string sql = "select * from [" + Table + "] " + WhereCondition;
+                oRecordSet.DoQuery(sql);
+
+                if (oRecordSet.RecordCount > 0)
+                {
+                    rpta = "S";
+                    oRecordSet.MoveFirst();
+                    foreach (PropertyInfo propiedad in Objeto.GetType().GetProperties())
+                    {
+                        try
+                        {
+                            string tipoPropiedad = propiedad.PropertyType.Name;
+                            string NombrePropiedad = propiedad.Name;
+                            object valorPropiedad = propiedad.GetValue(Objeto, null);
+                            propiedad.SetValue(Objeto, Convert.ChangeType(oRecordSet.Fields.Item(NombrePropiedad).Value, propiedad.PropertyType), null);
+                        }
+                        catch (Exception)
+                        {
+                            rpta = "N";
+                        }
+                    }
+                }
+            }
+            catch (Exception) { }
+            return rpta;
         }
 
         public static string InsertRecord(string UDO_Name, Object Objeto, string UDO_Child, List<Object> DetalleObjeto)
@@ -53,7 +91,7 @@ namespace TransferenciasBancarias.Capa_Datos
             {
                 //get company service
                 if (!SBO_Company.Connected)
-                    Funciones.Conectar_Aplicacion();
+                    Conexion.Conectar_Aplicacion();
 
                 oCompService = SBO_Company.GetCompanyService();
 
@@ -75,7 +113,7 @@ namespace TransferenciasBancarias.Capa_Datos
                         var valorPropiedad = propiedad.GetValue(Objeto, null);
                         oGeneralData.SetProperty(NombrePropiedad, valorPropiedad);
                     }
-                    catch (Exception){}
+                    catch (Exception) { }
                 }
 
                 //  Handle child rows
@@ -128,7 +166,7 @@ namespace TransferenciasBancarias.Capa_Datos
                 }
             }
             return rpta;
-           
+
             //try
             //{
             //    Type c_typo =  Objeto.GetType();
@@ -140,10 +178,10 @@ namespace TransferenciasBancarias.Capa_Datos
             //        string NombrePropiedad = propiedad.Name;
             //        var valorPropiedad = propiedad.GetValue(Objeto, null);
             //    }
-                
+
             //}
             //catch (Exception){}
-          
+
         }
 
         public static string UpdateRecordHead(string UDO_Name, Object Objeto, string CodigoObj)
@@ -182,9 +220,130 @@ namespace TransferenciasBancarias.Capa_Datos
                 oGeneralService.Update(oGeneralData);
                 rpta = "S";
             }
-            catch (Exception){}
+            catch (Exception) { }
             return rpta;
         }
+
+        public static string DeleteRecord(string UDO_Name, string CodigoObj)
+        {
+            SAPbobsCOM.GeneralService oGeneralService = null;
+            SAPbobsCOM.GeneralData oGeneralData = null;
+            SAPbobsCOM.GeneralDataParams oGeneralParams = null;
+            SAPbobsCOM.CompanyService sCmp = null;
+            SAPbobsCOM.Company SBO_Company = Conexion.oCompany;
+
+            sCmp = SBO_Company.GetCompanyService();
+            string rpta = "N";
+            try
+            {
+                // Get a handle to the SM_MOR UDO
+                oGeneralService = sCmp.GetGeneralService(UDO_Name);
+
+                // Delete UDO record
+                oGeneralParams = ((SAPbobsCOM.GeneralDataParams)(oGeneralService.GetDataInterface(SAPbobsCOM.GeneralServiceDataInterfaces.gsGeneralDataParams)));
+                oGeneralParams.SetProperty("Code", CodigoObj);
+                oGeneralData = oGeneralService.GetByParams(oGeneralParams);
+                oGeneralService.Delete(oGeneralParams);
+            }
+            catch (Exception) { }
+            return rpta;
+        }
+
+        public static void CreateUDO(string tableName, SAPbobsCOM.BoUDOObjType objtype)
+        {
+            SAPbobsCOM.UserObjectsMD oUdtMD = null/* TODO Change to default(_) if this is not a reference type */; // ‘
+            string errmsg = "";
+            try
+            {
+                SAPbobsCOM.Company SBO_Company = Conexion.oCompany;
+
+                oUdtMD = (SAPbobsCOM.UserObjectsMD)SBO_Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oUserObjectsMD);
+                if (oUdtMD.GetByKey(tableName) == false)
+                {
+                    oUdtMD.Code = tableName;
+                    oUdtMD.Name = tableName;
+                    oUdtMD.TableName = tableName;
+
+                    oUdtMD.ObjectType = objtype;
+
+                    oUdtMD.CanCancel = SAPbobsCOM.BoYesNoEnum.tNO;
+                    oUdtMD.CanClose = SAPbobsCOM.BoYesNoEnum.tNO;
+                    oUdtMD.CanDelete = SAPbobsCOM.BoYesNoEnum.tNO;
+                    oUdtMD.CanFind = SAPbobsCOM.BoYesNoEnum.tYES;
+                    oUdtMD.CanLog = SAPbobsCOM.BoYesNoEnum.tYES;
+                    oUdtMD.ManageSeries = SAPbobsCOM.BoYesNoEnum.tNO;
+                    oUdtMD.CanCreateDefaultForm = SAPbobsCOM.BoYesNoEnum.tNO;
+                    oUdtMD.CanYearTransfer = SAPbobsCOM.BoYesNoEnum.tYES;
+                    oUdtMD.EnableEnhancedForm = SAPbobsCOM.BoYesNoEnum.tYES;
+                    oUdtMD.MenuItem = SAPbobsCOM.BoYesNoEnum.tNO;
+                    oUdtMD.UseUniqueFormType = SAPbobsCOM.BoYesNoEnum.tNO;
+                    oUdtMD.Position = 1;
+                    oUdtMD.FatherMenuID = 2048;
+                    oUdtMD.LogTableName = "AREBATEMASTER";
+                    if (objtype == SAPbobsCOM.BoUDOObjType.boud_MasterData)
+                    {
+                        oUdtMD.FormColumns.FormColumnAlias = "Code";
+                        oUdtMD.FormColumns.Add();
+                    }
+                    else
+                    {
+                        oUdtMD.FormColumns.FormColumnAlias = "DocEntry";
+                        oUdtMD.FormColumns.Add();
+                    }
+
+                    int lRetCode;
+                    lRetCode = oUdtMD.Add();
+
+                    if ((lRetCode != 0))
+                    {
+                        if ((lRetCode == -2035))
+                            errmsg = "-2035";
+                        errmsg = SBO_Company.GetLastErrorDescription();
+                    }
+
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(oUdtMD);
+                    oUdtMD = null/* TODO Change to default(_) if this is not a reference type */;
+                    GC.Collect();
+                    errmsg = "";
+                }
+                else
+                    errmsg = "";
+
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        public static bool CheckUDOExists(string UDOName)
+        {
+            SAPbobsCOM.Company SBO_Company = Conexion.oCompany;
+
+            SAPbobsCOM.UserObjectsMD oUdtMD = null/* TODO Change to default(_) if this is not a reference type */;
+            bool ret = false;
+            try
+            {
+                oUdtMD = (SAPbobsCOM.UserObjectsMD)SBO_Company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oUserObjectsMD);
+
+                if (oUdtMD.GetByKey(UDOName))
+                    ret = true;
+                else
+                    ret = false;
+            }
+            catch (Exception)
+            {
+                ret = false;
+            }
+            finally
+            {
+                System.Runtime.InteropServices.Marshal.ReleaseComObject(oUdtMD);
+                oUdtMD = null/* TODO Change to default(_) if this is not a reference type */;
+                GC.Collect();
+            }
+
+            return ret;
+        }
+
 
     }
 }

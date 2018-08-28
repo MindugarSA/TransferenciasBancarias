@@ -97,11 +97,13 @@
     <Compile Include="Capa Datos\DParametrosTXT.cs" />
     <Compile Include="Capa Datos\DHistoricoTXT.cs" />
     <Compile Include="Capa Datos\FuncionesUDO.cs" />
+    <Compile Include="Capa Datos\FuncionesUDT.cs" />
     <Compile Include="Capa Negocios\NArchivoTransferencia.cs" />
     <Compile Include="Capa Negocios\NConsultaDocumentos.cs" />
     <Compile Include="Capa Negocios\NHistoricoPagos.cs" />
     <Compile Include="Capa Negocios\NHistoricoTXT.cs" />
     <Compile Include="Capa Negocios\NParametrosTXT.cs" />
+    <Compile Include="Capa Negocios\NVerificaAgregaUDO.cs" />
     <Compile Include="Capa Presentacion\Users Forms\ConsultaDoc.b1f.cs">
       <DependentUpon>ConsultaDoc.b1f</DependentUpon>
     </Compile>

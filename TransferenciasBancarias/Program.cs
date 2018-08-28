@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using SAPbouiCOM.Framework;
 using System.Globalization;
+using TransferenciasBancarias.Capa_Negocios;
 
 namespace TransferenciasBancarias
 {
@@ -44,6 +45,8 @@ namespace TransferenciasBancarias
                 Funciones.sAliasUsuActual = Capa_Datos.Conexion.sAliasUsuActual;
                 Funciones.sNomUsuActual = Capa_Datos.Conexion.sNomUsuActual;
                 Funciones.sCurrentCompanyDB = Capa_Datos.Conexion.sCurrentCompanyDB;
+
+                NVerificaAgregaUDO.VerificarCrearUDO();
 
                 oApp.Run();
             }
